@@ -1,5 +1,5 @@
 (function () {
-  const API_BASE = window.NOVACART_API_BASE || "http://localhost:5000/api";
+  const API_BASE = window.NOVACART_API_BASE || "https://ecommerce-backend-mdcr.onrender.com/api";
   const TOKEN_KEY = "novacart-token";
   const USER_KEY = "novacart-user";
   const GUEST_CART_KEY = "novacart-cart-guest";
