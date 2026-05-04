@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NovaCart Checkout</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23db6a2c'/%3E%3Cstop offset='100%25' stop-color='%23f4a261'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='18' fill='url(%23g)'/%3E%3Ctext x='50%25' y='54%25' text-anchor='middle' font-family='Arial, sans-serif' font-size='32' font-weight='700' fill='white'%3EN%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4efe6;
+  --surface:#fffdf8;
+  --surface-strong:#ffffff;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --line:#e7dfd2;
+  --brand:#db6a2c;
+  --brand-dark:#b94f15;
+  --brand-soft:#fff1e7;
+  --shadow:0 18px 40px rgba(47, 37, 20, 0.12);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:'Manrope',sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(219,106,44,0.18), transparent 26%),
+    radial-gradient(circle at top right, rgba(31,111,95,0.16), transparent 24%),
+    linear-gradient(180deg, #f8f3eb 0%, var(--bg) 100%);
+  color:var(--text);
+  min-height:100vh;
+}
+
+a,button,input{
+  font:inherit;
+}
+
+.page{
+  max-width:1200px;
+  margin:0 auto;
+  padding:24px;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  margin-bottom:24px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.brand-mark{
+  width:48px;
+  height:48px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg, var(--brand), #f4a261);
+  color:#fff;
+  font-size:20px;
+  font-weight:800;
+  box-shadow:var(--shadow);
+}
+
+.brand h1{
+  font-size:24px;
+  font-weight:800;
+  letter-spacing:-0.04em;
+}
+
+.brand p{
+  color:var(--muted);
+  font-size:14px;
+}
+
+.back-link{
+  text-decoration:none;
+  color:var(--text);
+  background:rgba(255,255,255,0.82);
+  border:1px solid rgba(255,255,255,0.76);
+  border-radius:999px;
+  padding:10px 16px;
+  box-shadow:var(--shadow);
+}
+
+a.back-link,
+button.back-link{
+  cursor:pointer;
+}
+
+.topbar-actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.topbar-actions[hidden]{
+  display:none;
+}
+
+.hero{
+  background:rgba(255,253,248,0.88);
+  border:1px solid rgba(255,255,255,0.78);
+  border-radius:28px;
+  padding:30px;
+  box-shadow:var(--shadow);
+  margin-bottom:22px;
+}
+
+.hero span{
+  display:inline-block;
+  margin-bottom:12px;
+  background:var(--brand-soft);
+  color:var(--brand-dark);
+  font-size:13px;
+  font-weight:800;
+  padding:8px 12px;
+  border-radius:999px;
+}
+
+.hero h2{
+  font-size:clamp(32px, 5vw, 52px);
+  letter-spacing:-0.05em;
+  margin-bottom:12px;
+}
+
+.hero p{
+  max-width:60ch;
+  color:var(--muted);
+  line-height:1.7;
+}
+
+.checkout-layout{
+  display:grid;
+  grid-template-columns:1.1fr 0.9fr;
+  gap:20px;
+}
+
+.panel{
+  background:rgba(255,253,248,0.9);
+  border:1px solid rgba(255,255,255,0.76);
+  border-radius:28px;
+  padding:24px;
+  box-shadow:var(--shadow);
+}
+
+.panel h3{
+  font-size:24px;
+  letter-spacing:-0.04em;
+  margin-bottom:8px;
+}
+
+.panel-subtitle{
+  color:var(--muted);
+  margin-bottom:18px;
+}
+
+.checkout-items{
+  display:grid;
+  gap:12px;
+}
+
+.checkout-item{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:flex-start;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:16px;
+}
+
+.checkout-item-copy h3{
+  font-size:17px;
+  margin-bottom:4px;
+}
+
+.checkout-item-copy p,
+.checkout-item-meta span,
+.summary-row{
+  color:var(--muted);
+}
+
+.checkout-item-meta{
+  text-align:right;
+}
+
+.checkout-form{
+  display:grid;
+  gap:14px;
+  margin-bottom:18px;
+}
+
+.payment-methods{
+  display:grid;
+  gap:12px;
+  margin-bottom:18px;
+}
+
+.payment-option{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  padding:14px 16px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:#fff;
+  cursor:pointer;
+}
+
+.payment-option input{
+  margin-top:4px;
+  cursor:pointer;
+}
+
+.payment-option strong{
+  display:block;
+  margin-bottom:4px;
+}
+
+.payment-option span{
+  color:var(--muted);
+  line-height:1.5;
+}
+
+.checkout-form input{
+  width:100%;
+  padding:14px 16px;
+  border-radius:16px;
+  border:1px solid var(--line);
+  outline:none;
+  background:#fff;
+}
+
+.checkout-form input[readonly]{
+  cursor:not-allowed;
+}
+
+.summary{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:18px;
+}
+
+.summary-row,
+.summary-total{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.summary-row{
+  margin-bottom:10px;
+}
+
+.summary-total{
+  padding-top:14px;
+  border-top:1px solid var(--line);
+  font-size:20px;
+  font-weight:800;
+}
+
+.primary-button{
+  width:100%;
+  margin-top:16px;
+  border:none;
+  border-radius:16px;
+  padding:14px;
+  cursor:pointer;
+  color:#fff;
+  font-weight:800;
+  background:linear-gradient(135deg, var(--brand), #f29e4c);
+}
+
+.empty{
+  text-align:center;
+  padding:36px 20px;
+  background:#fff;
+  border:1px dashed #d6c7b2;
+  border-radius:20px;
+  color:var(--muted);
+}
+
+.checkout-note{
+  margin-bottom:18px;
+  padding:14px 16px;
+  border-radius:18px;
+  background:var(--brand-soft);
+  color:var(--brand-dark);
+  font-weight:700;
+  line-height:1.6;
+}
+
+@media (max-width: 900px){
+  .checkout-layout{
+    grid-template-columns:1fr;
+  }
+}
+
+@media (max-width: 640px){
+  .page{
+    padding:16px;
+  }
+
+  .topbar{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .hero,
+  .panel{
+    padding:18px;
+    border-radius:22px;
+  }
+
+  .checkout-item{
+    flex-direction:column;
+  }
+
+  .checkout-item-meta{
+    text-align:left;
+  }
+}
+</style>
+</head>
+<body id="checkoutPage">
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">N</div>
+        <div>
+          <h1>NovaCart Checkout</h1>
+          <p>Review your order and finish your purchase.</p>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <div id="checkoutGuestActions" class="topbar-actions">
+          <a class="back-link" href="./login.html">Login</a>
+          <a class="back-link" href="./signup.html">Sign Up</a>
+        </div>
+        <div id="checkoutUserActions" class="topbar-actions" hidden>
+          <div class="back-link">Hi, <strong id="checkoutUserName">Customer</strong></div>
+          <button id="checkoutLogoutButton" class="back-link" type="button">Logout</button>
+        </div>
+        <a class="back-link" href="./index.html">Home</a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <span>Secure checkout</span>
+      <h2>Fast checkout, clear totals, and a cleaner final step.</h2>
+      <p>
+        This page now shows the checkout logic separately from the main storefront so your
+        build folder has a more realistic ecommerce flow.
+      </p>
+    </section>
+
+    <main id="checkoutContent" class="checkout-layout">
+      <section class="panel">
+        <h3>Order items</h3>
+        <p class="panel-subtitle">Items in your cart ready for checkout.</p>
+        <div class="checkout-items" id="checkoutItems"></div>
+      </section>
+
+      <aside class="panel">
+        <h3>Customer details</h3>
+        <p class="panel-subtitle">Your saved account details are used here so checkout stays fast and personalized.</p>
+        <div id="checkoutAuthNote" class="checkout-note" hidden>
+          Please log in or create your account first. Checkout now uses your saved profile details automatically.
+        </div>
+
+        <form class="checkout-form">
+          <input id="fullName" type="text" placeholder="Full name" />
+          <input id="emailAddress" type="email" placeholder="Email address" />
+          <input id="shippingAddress" type="text" placeholder="Shipping address" />
+          <input id="cityPostal" type="text" placeholder="City and postal code" />
+        </form>
+
+        <div class="payment-methods">
+          <label class="payment-option">
+            <input type="radio" name="paymentMethod" value="razorpay" checked />
+            <div>
+              <strong>Pay Online</strong>
+              <span>Use Razorpay for card, UPI, net banking, and wallet payments.</span>
+            </div>
+          </label>
+          <label class="payment-option">
+            <input type="radio" name="paymentMethod" value="cod" />
+            <div>
+              <strong>Cash on Delivery</strong>
+              <span>Place the order now and pay when your shipment arrives.</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="summary">
+          <div class="summary-row">
+            <span>Items</span>
+            <strong id="checkoutItemCount">0</strong>
+          </div>
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <strong id="checkoutSubtotal">Rs 0</strong>
+          </div>
+          <div class="summary-row">
+            <span>Shipping</span>
+            <strong id="checkoutShipping">Rs 0</strong>
+          </div>
+          <div class="summary-row">
+            <span>Tax</span>
+            <strong id="checkoutTax">Rs 0</strong>
+          </div>
+          <div class="summary-total">
+            <span>Total</span>
+            <span id="checkoutTotal">Rs 0</span>
+          </div>
+          <button class="primary-button" id="placeOrderButton" type="button">Place Order</button>
+        </div>
+      </aside>
+    </main>
+
+    <section class="panel empty" id="checkoutEmpty" hidden>
+      <h3>Your cart is empty</h3>
+      <p>Add products from the store before opening the checkout page.</p>
+    </section>
+  </div>
+
+  <script src="./novacart-api.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="./checkout.js"></script>
+</body>
+</html>
